@@ -1,0 +1,67 @@
+@startuml
+
+actor User as u
+actor Manager as m
+
+title Sequence Diagram: Login and Operations
+
+group Login Process
+    u -> Main: Start System
+    Main -> ATMSystem: startATM(scanner)
+    u -> ATMSystem: Login
+    ATMSystem -> ATMSystem: validateLogin(login, password)
+    ATMSystem -> Account: validateUserAccount(password)
+    Account --> ATMSystem: result (true/false)
+    ATMSystem --> u: Login Successful (User)
+    m -> ATMSystem: Login
+    ATMSystem -> Manager: validateManagerAccount(password)
+    Manager --> ATMSystem: result (true/false)
+    ATMSystem --> m: Login Successful (Manager)
+end
+
+group User Operations
+    u -> ATMSystem: Check Balance
+    ATMSystem -> Account: getBalance()
+    Account --> ATMSystem: balance
+    ATMSystem --> u: Show Balance
+
+    u -> ATMSystem: Withdraw Money
+    ATMSystem -> ATMAction: withdraw(Account, amount)
+    ATMAction -> Account: setBalance(newBalance)
+    ATMSystem --> u: Withdrawal Success
+
+    u -> ATMSystem: Deposit Money
+    ATMSystem -> ATMAction: deposit(Account, amount)
+    ATMAction -> Account: setBalance(newBalance)
+    ATMSystem --> u: Deposit Success
+
+    u -> ATMSystem: Transfer Money
+    ATMSystem -> ATMSystem: findAccountByLoginOnly(recipientLogin)
+    ATMSystem -> ATMAction: transfer(Account, toAccount, amount)
+    ATMAction -> Account: setBalance(newBalance)
+    ATMAction -> Account: setBalance(newBalance)
+    ATMSystem --> u: Transfer Success
+end
+
+group Manager Operations
+    m -> ATMSystem: Add New Account
+    ATMSystem -> ATMSystem: manageAccounts(scanner)
+    ATMSystem -> Account: create new Account
+    Account --> ATMSystem: Account Created
+    ATMSystem --> m: Account Added Successfully
+
+    m -> ATMSystem: View All Accounts
+    ATMSystem -> Account: Retrieve Accounts
+    Account --> ATMSystem: List of Accounts
+    ATMSystem --> m: Display Accounts
+
+    m -> ATMSystem: Delete Account
+    ATMSystem -> Account: Find Account by ID
+    Account --> ATMSystem: Account Found 
+    ATMSystem -> Account: Delete Account
+    Account --> ATMSystem: Deletion Successful
+    ATMSystem --> m: Account Deleted Successfully
+    ATMSystem --> m: Account Not Found (if applicable)
+end
+
+@enduml
