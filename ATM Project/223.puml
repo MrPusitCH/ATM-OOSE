@@ -1,0 +1,19 @@
+@startuml
+actor Manager
+participant ATMSystem
+
+Manager -> ATMSystem: setBTCRate(scanner)
+ATMSystem -> Manager: Enter BTC rate
+
+alt BTC Rate Set Successfully
+    ATMSystem -> ATMSystem: Update BTC Rate
+    ATMSystem -> Manager: BTC rate set successfully
+end
+
+alt BTC Rate Set Failed
+    ATMSystem -> Manager: Invalid input, please enter a valid number
+end
+
+destroy Manager
+destroy ATMSystem
+@enduml

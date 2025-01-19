@@ -1,0 +1,28 @@
+@startuml
+actor User
+participant ATMSystem
+
+User -> ATMSystem: login()
+alt Authentication Success
+    ATMSystem -> User: Authentication Success
+    User -> ATMSystem: withdraw(amount, currency)
+    alt Withdraw THB
+        alt Withdrawal Success
+            ATMSystem -> User: Withdrawal Successful
+        else Withdrawal Failed
+            ATMSystem -> User: Insufficient THB Balance
+        end
+    else Withdraw BTC
+        alt Withdrawal Success
+            ATMSystem -> User: Withdrawal Successful
+        else Withdrawal Failed
+            ATMSystem -> User: Insufficient BTC Balance
+        end
+    end
+else Authentication Failed
+    ATMSystem -> User: Authentication Failed
+end
+
+destroy User
+destroy ATMSystem
+@enduml
